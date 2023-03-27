@@ -221,9 +221,13 @@ class MessageHandler:
 
     @patchable
     async def resolve_future(self, client, message, *args):
+        if message.from_user:
+            user = message.from_user.id
+        else:
+            user = None
         listener_type = ListenerTypes.MESSAGE
         listener, identifier = client.match_listener(
-            (message.chat.id, message.from_user.id, message.id),
+            (message.chat.id, user, message.id),
             listener_type,
         )
         listener_does_match = False
@@ -251,8 +255,12 @@ class CallbackQueryHandler:
 
     @patchable
     async def check(self, client, query):
+        if query.from_user:
+            user = query.from_user.id
+        else:
+            user = None
         listener = client.match_listener(
-            (query.message.chat.id, query.from_user.id, query.message.id),
+            (query.message.chat.id, user, query.message.id),
             ListenerTypes.CALLBACK_QUERY,
         )[0]
 
@@ -285,9 +293,13 @@ class CallbackQueryHandler:
 
     @patchable
     async def resolve_future(self, client, query, *args):
+        if query.from_user:
+            user = query.from_user.id
+        else:
+            user = None
         listener_type = ListenerTypes.CALLBACK_QUERY
         listener, identifier = client.match_listener(
-            (query.message.chat.id, query.from_user.id, query.message.id),
+            (query.message.chat.id, user, query.message.id),
             listener_type,
         )
 
